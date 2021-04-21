@@ -1,2 +1,2 @@
 # console
-#mod# Simple asynchronous logging toolkit, output to file and screen.
+简单的异步日志记录工具包，输出到文件和屏幕
