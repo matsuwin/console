@@ -117,7 +117,13 @@ func push(l int, f *uintptr, n string, m *string, a ...interface{}) {
 	if len(a) != 0 {
 		*m = fmt.Sprintf(*m, a...)
 	}
-	engine <- structure{l, time.Now(), *f, n, *m, CPUPercent}
+	go func() {
+		defer func() {
+			if ei := recover(); ei != nil {
+			}
+		}()
+		engine <- structure{l, time.Now(), *f, n, *m, CPUPercent}
+	}()
 }
 
 func loop() {
