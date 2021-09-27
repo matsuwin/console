@@ -3,6 +3,7 @@ package console
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/pkg/errors"
 	"runtime"
 	"strings"
 	"sync"
@@ -13,14 +14,15 @@ const _INFO, _DEBUG, _WARN, _ERROR = 0, 1, 2, 3
 
 var (
 	control     = Options{Print: true}
-	engine      = make(chan structure, 1024)
+	rateLimit   = 1024
+	engine      = make(chan structure, rateLimit)
 	wg          = sync.WaitGroup{}
 	consoleExit = "internal:consoleExit"
 )
 
 // Options ...
 type Options struct {
-	Print, Info, Debug, Warning, Error bool
+	Info, Debug, Warning, Error, Print bool
 	LogFileSizeMB                      int
 	MaxBackups                         int
 	Filename                           string
@@ -97,8 +99,11 @@ func WARN(msg string, a ...interface{}) string {
 }
 
 // ERROR 错误信息
-func ERROR(err error) error {
+func ERROR(err error, msg ...string) error {
 	if control.Error {
+		if len(msg) != 0 {
+			err = errors.Wrap(err, msg[0])
+		}
 		pc, file, line, _ := runtime.Caller(1)
 		msg := err.Error()
 		push(_ERROR, &pc, fileLine(file, line), &msg)
@@ -116,6 +121,10 @@ func fileLine(file string, line int) string {
 func push(l int, f *uintptr, n string, m *string, a ...interface{}) {
 	if len(a) != 0 {
 		*m = fmt.Sprintf(*m, a...)
+	}
+	if len(engine) < rateLimit {
+		engine <- structure{l, time.Now(), *f, n, *m, CPUPercent}
+		return
 	}
 	go func() {
 		defer func() {
@@ -195,9 +204,9 @@ func loop() {
 
 // ManuallyClose 手动关闭日志
 func ManuallyClose() {
-	engine <- structure{M: consoleExit}
-	wg.Wait()
-	fos.Close()
+	if _, has := <-engine; has {
+		engine <- structure{M: consoleExit}
+	}
 }
 
 // Timekeeper 函数运行计时
