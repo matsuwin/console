@@ -1,9 +1,9 @@
 package main
 
 import (
-	"console"
 	"fmt"
 	"github.com/pkg/errors"
+	"console"
 )
 
 func main() {
@@ -12,8 +12,7 @@ func main() {
 
 func running() {
 	defer console.New(&console.Options{
-		Info: true, Debug: true, Warning: true, Error: true,
-		Print:         true,
+		Info: true, Debug: true, Warning: true, Error: true, Print: true,
 		LogFileSizeMB: 1024,
 		MaxBackups:    10,
 		Filename:      "log/execution.log",
