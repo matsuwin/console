@@ -1,18 +1,8 @@
 # console
 
-Go 异步、快速、分级的日志记录，超过阀值自动压缩。
+异步、快速、分级的日志记录，超过阀值自动压缩。
 
 <br>
-
-<img src="examples/demo.png">
-
-<br>
-
-## Installing
-
-```
-go get github.com/matsuwin/console
-```
 
 ## Quick Start
 
@@ -41,3 +31,13 @@ fmt.Printf("WARN: %s\n", warn)
 err := console.ERROR(errors.New(txt))
 fmt.Printf("ERROR: %s\n", err)
 ```
+
+## Installing
+
+```
+go get github.com/matsuwin/console
+```
+
+<br>
+
+<img src="examples/demo.png">
