@@ -8,6 +8,12 @@ Go 异步、快速、分级的日志记录，超过阀值自动压缩。
 
 <br>
 
+## Installing
+
+```
+go get github.com/matsuwin/console
+```
+
 ## Quick Start
 
 ```go
