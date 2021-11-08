@@ -51,7 +51,7 @@ func ERROR(err error, msg ...string) error {
 }
 
 var (
-	control     = Options{Print: true}
+	control     = Options{}
 	rateLimit   = 1024
 	engine      = make(chan structure, rateLimit)
 	wg          = sync.WaitGroup{}
@@ -68,7 +68,7 @@ type Options struct {
 
 // L T F N M
 type structure struct {
-	L int       // Level
+	L uint8     // Level
 	T time.Time // timestamp
 	F uintptr   // Function
 	N string    // FileLine
@@ -80,6 +80,12 @@ type structure struct {
 // Wait 等待缓冲区的所有数据被消费
 func (*structure) Wait() {
 	engine <- structure{M: consoleExit}
+
+	// 注意!!! 如果您在程序中并行调用了 cgo，很有可能会产生 panic，无法恢复。
+	// panic:
+	//   runtime: unexpected return pc for runtime.chanrecv called from 0xc000409008
+	//   fatal error: unknown caller pc
+
 	wg.Wait()
 }
 
@@ -87,6 +93,8 @@ func (*structure) Wait() {
 func New(options *Options) interface{ Wait() } {
 	if options != nil {
 		control = *options
+	} else {
+		control = Options{Info: true, Debug: true, Warning: true, Error: true, Print: true}
 	}
 	wg.Add(2)
 
@@ -118,7 +126,7 @@ func ManuallyClose() {
 	}
 }
 
-func push(l int, f *uintptr, n string, m *string, a ...interface{}) {
+func push(l uint8, f *uintptr, n string, m *string, a ...interface{}) {
 	if len(a) != 0 {
 		*m = fmt.Sprintf(*m, a...)
 	}
@@ -143,8 +151,13 @@ func fileLine(file string, line int) string {
 }
 
 /**
- * Tools
+* Tools
  */
+
+// Time2String time.Time format to string
+func Time2String(t time.Time) string {
+	return t.Local().Format("2006-01-02.15:04:05")
+}
 
 // Timekeeper 函数运行计时
 func Timekeeper(name string) func() {
