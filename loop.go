@@ -27,10 +27,6 @@ func cpuMonitor() {
 func loop() {
 	defer fos.Close()
 
-	if control.Filename == "" {
-		control.Filename = "log/execution.log"
-	}
-
 	fos = NewLumberjack(control.Filename, control.LogFileSizeMB, control.MaxBackups)
 	writeLine := ""
 
@@ -40,20 +36,22 @@ func loop() {
 			return
 		}
 
-		date := elem.T.Local().Format(time.RFC3339)
+		date := Time2String(elem.T)
 		function := runtime.FuncForPC(elem.F).Name()
 
-		switch elem.L {
-		case _INFO:
-			writeLine = fmt.Sprintf("INFO   %s (%s) %s (CPU:%.1f%%) %s\n", date, function, elem.N, elem.cpu, elem.M)
-		case _DEBUG:
-			writeLine = fmt.Sprintf("DEBUG  %s (%s) %s (CPU:%.1f%%) %s\n", date, function, elem.N, elem.cpu, elem.M)
-		case _WARN:
-			writeLine = fmt.Sprintf("WARN   %s (%s) %s (CPU:%.1f%%) %s\n", date, function, elem.N, elem.cpu, elem.M)
-		case _ERROR:
-			writeLine = fmt.Sprintf("ERROR  %s (%s) %s (CPU:%.1f%%) %s\n", date, function, elem.N, elem.cpu, elem.M)
+		if control.Filename != "" {
+			switch elem.L {
+			case _INFO:
+				writeLine = fmt.Sprintf("INFO   %s (%s) %s (CPU:%.1f%%) %s\n", date, function, elem.N, elem.cpu, elem.M)
+			case _DEBUG:
+				writeLine = fmt.Sprintf("DEBUG  %s (%s) %s (CPU:%.1f%%) %s\n", date, function, elem.N, elem.cpu, elem.M)
+			case _WARN:
+				writeLine = fmt.Sprintf("WARN   %s (%s) %s (CPU:%.1f%%) %s\n", date, function, elem.N, elem.cpu, elem.M)
+			case _ERROR:
+				writeLine = fmt.Sprintf("ERROR  %s (%s) %s (CPU:%.1f%%) %s\n", date, function, elem.N, elem.cpu, elem.M)
+			}
+			_, _ = fos.Write([]byte(writeLine))
 		}
-		_, _ = fos.Write([]byte(writeLine))
 
 		if control.Print {
 			// fmt.Printf("\033[0;31;48m%s\033[0m\n", "RED")
