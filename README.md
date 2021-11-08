@@ -32,6 +32,8 @@ err := console.ERROR(errors.New(txt))
 fmt.Printf("ERROR: %s\n", err)
 ```
 
+<br>
+
 ## Installing
 
 ```
