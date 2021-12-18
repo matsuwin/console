@@ -2,7 +2,7 @@ package console
 
 import "gopkg.in/natefinch/lumberjack.v2"
 
-var fos *lumberjack.Logger
+var stream *lumberjack.Logger
 
 func NewLumberjack(filename string, filesizeMB, backups int) *lumberjack.Logger {
 	return &lumberjack.Logger{

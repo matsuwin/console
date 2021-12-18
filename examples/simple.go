@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/pkg/errors"
-	"console"
+	"r/console"
 )
 
 func main() {

@@ -1,6 +1,6 @@
 package main
 
-import "console"
+import "r/console"
 
 func main() {
 	defer console.New(&console.Options{

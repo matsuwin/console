@@ -54,7 +54,7 @@ var (
 	control     = Options{}
 	rateLimit   = 1024
 	engine      = make(chan structure, rateLimit)
-	wg          = sync.WaitGroup{}
+	wg          = &sync.WaitGroup{}
 	consoleExit = "internal:consoleExit"
 )
 
@@ -98,23 +98,8 @@ func New(options *Options) interface{ Wait() } {
 	}
 	wg.Add(2)
 
-	go func() {
-		defer func() {
-			if ei := recover(); ei != nil {
-			}
-			wg.Done()
-		}()
-		cpuMonitor()
-	}()
-
-	go func() {
-		defer func() {
-			if ei := recover(); ei != nil {
-			}
-			wg.Done()
-		}()
-		loop()
-	}()
+	go monitorCpu(wg)
+	go loop(wg)
 
 	return &structure{}
 }
@@ -136,7 +121,8 @@ func push(l uint8, f *uintptr, n string, m *string, a ...interface{}) {
 	}
 	go func() {
 		defer func() {
-			if ei := recover(); ei != nil {
+			if err := recover(); err != nil {
+				println(err)
 			}
 		}()
 		engine <- structure{l, time.Now(), *f, n, *m, CPUPercent}
