@@ -2,6 +2,8 @@
 
 异步、快速、分级的日志记录，超过阀值自动压缩。
 
+<img src="examples/demo.png">
+
 <br>
 
 ## Quick Start
@@ -39,7 +41,3 @@ fmt.Printf("ERROR: %s\n", err)
 ```
 go get github.com/matsuwin/console
 ```
-
-<br>
-
-<img src="examples/demo.png">
