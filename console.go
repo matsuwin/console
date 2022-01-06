@@ -1,8 +1,8 @@
 package console
 
 import (
-	"encoding/json"
 	"fmt"
+	"github.com/json-iterator/go"
 	"github.com/pkg/errors"
 	"runtime"
 	"strings"
@@ -137,7 +137,7 @@ func fileLine(file string, line int) string {
 }
 
 /**
-* Tools
+ * Tools
  */
 
 // Time2String time.Time format to string
@@ -150,20 +150,32 @@ func Timekeeper(name string) func() {
 	pc := make([]uintptr, 1)
 	runtime.Callers(3, pc)
 	start := time.Now()
-	DEBUG("timekeeper START for %s", name)
+	DEBUG("[ Timekeeper ] Start %s", name)
 	return func() {
-		DEBUG("timekeeper END for %s T:%s", name, time.Since(start))
+		DEBUG("[ Timekeeper ] Finish %s T:%s", name, time.Since(start))
 	}
 }
 
 // Json 格式化输出JSON
-func Json(data interface{}, indent string) (buf []byte) {
+func Json(val interface{}, indent string) []byte {
+	jss, _ := JsonMarshal(val, indent)
+	fmt.Printf("%s\n", jss)
+	return jss
+}
+
+// JsonMarshal SetEscapeHTML=false
+func JsonMarshal(val interface{}, indent string) (ret []byte, err error) {
 	if indent != "" {
-		buf, _ = json.MarshalIndent(data, "", indent)
-		fmt.Println(string(buf))
+		ret, err = jsonIteratorConfig.MarshalIndent(val, "", indent)
 	} else {
-		buf, _ = json.Marshal(data)
-		fmt.Println(string(buf))
+		ret, err = jsonIteratorConfig.Marshal(val)
+	}
+	if err != nil {
+		return nil, errors.New(err.Error())
 	}
 	return
 }
+
+var jsonIteratorConfig = jsoniter.Config{
+	EscapeHTML: false,
+}.Froze()
