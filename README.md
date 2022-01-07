@@ -2,7 +2,7 @@
 
 异步、快速、分级的日志记录，超过阀值自动压缩。
 
-<img src="examples/demo.png">
+<img src="demo.png">
 
 <br>
 
@@ -12,8 +12,8 @@
 // 激活并启用功能
 defer console.New(&console.Options{
     Info: true, Debug: true, Warning: true, Error: true, Print: true,
-    LogFileSizeMB: 1024,
-    MaxBackups:    10,
+    LogFileSizeMB: 100,
+    MaxBackups:    3,
     Filename:      "log/execution.log",
 }).Wait()
 

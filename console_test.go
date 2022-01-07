@@ -1,36 +1,36 @@
-package main
+package console
 
 import (
 	"fmt"
 	"github.com/pkg/errors"
-	"r/console"
+	"testing"
 )
 
-func main() {
+func Test(t *testing.T) {
 	running()
 }
 
 func running() {
-	defer console.New(&console.Options{
+	defer New(&Options{
 		Info: true, Debug: true, Warning: true, Error: true, Print: true,
-		LogFileSizeMB: 1024,
-		MaxBackups:    10,
+		LogFileSizeMB: 100,
+		MaxBackups:    3,
 		Filename:      "log/execution.log",
 	}).Wait()
 
 	txt := "error message."
 
 	// INFO
-	console.INFO(txt)
+	INFO(txt)
 
 	// DEBUG
-	console.DEBUG(txt)
+	DEBUG(txt)
 
 	// WARN
-	warn := console.WARN(txt)
+	warn := WARN(txt)
 	fmt.Printf("WARN: %s\n", warn)
 
 	// ERROR
-	err := console.ERROR(errors.New(txt))
+	err := ERROR(errors.New(txt))
 	fmt.Printf("ERROR: %s\n", err)
 }

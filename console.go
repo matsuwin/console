@@ -137,7 +137,7 @@ func fileLine(file string, line int) string {
 }
 
 /**
- * Tools
+ * Utils
  */
 
 // Time2String time.Time format to string

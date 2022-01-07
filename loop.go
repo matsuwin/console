@@ -3,8 +3,8 @@ package console
 import (
 	"context"
 	"fmt"
-	"github.com/matsuwin/siggroup/x/errcause"
 	"github.com/shirou/gopsutil/v3/process"
+	"github.com/utilgo/errcause"
 	"os"
 	"runtime"
 	"sync"
@@ -59,27 +59,6 @@ func loop(wg *sync.WaitGroup) {
 		}
 
 		if control.Print {
-			// fmt.Printf("\033[0;31;48m%s\033[0m\n", "RED")
-			//
-			// 前景 背景 颜色
-			// ---------------------------------------
-			// 30  40  黑色
-			// 31  41  红色
-			// 32  42  绿色
-			// 33  43  黄色
-			// 34  44  蓝色
-			// 35  45  紫红色
-			// 36  46  青蓝色
-			// 37  47  白色
-			//
-			// 代码 意义
-			// -------------------------
-			//  0  终端默认设置
-			//  1  高亮显示
-			//  4  使用下划线
-			//  5  闪烁
-			//  7  反白显示
-			//  8  不可见
 			switch elem.L {
 			case _INFO:
 				fmt.Printf("INFO  %s (%s) %s (CPU:%.1f%%) %s\n", ts, fn, elem.N, elem.cpu, elem.M)
@@ -93,3 +72,27 @@ func loop(wg *sync.WaitGroup) {
 		}
 	}
 }
+
+/**
+ * fmt.Printf("\033[0;31;48m%s\033[0m\n", "RED")
+ *
+ * 前景 背景 颜色
+ * ---------------------------------------
+ * 30  40  黑色
+ * 31  41  红色
+ * 32  42  绿色
+ * 33  43  黄色
+ * 34  44  蓝色
+ * 35  45  紫红色
+ * 36  46  青蓝色
+ * 37  47  白色
+ *
+ * 代码 意义
+ * -------------------------
+ *  0  终端默认设置
+ *  1  高亮显示
+ *  4  使用下划线
+ *  5  闪烁
+ *  7  反白显示
+ *  8  不可见
+ */
