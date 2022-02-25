@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/shirou/gopsutil/v3/process"
 	"github.com/utilgo/errcause"
+	"github.com/utilgo/stringx"
 	"os"
 	"runtime"
 	"sync"
@@ -55,7 +56,7 @@ func loop(wg *sync.WaitGroup) {
 			case _ERROR:
 				writeLine = fmt.Sprintf("ERROR  %s (%s) %s (CPU:%.1f%%) %s\n", ts, fn, elem.N, elem.cpu, elem.M)
 			}
-			_, _ = stream.Write([]byte(writeLine))
+			_, _ = stream.Write(stringx.StringToBytes(&writeLine))
 		}
 
 		if control.Print {
