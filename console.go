@@ -158,24 +158,26 @@ func Timekeeper(name string) func() {
 
 // Json 格式化输出JSON
 func Json(val interface{}, indent string) []byte {
-	jss, _ := JsonMarshal(val, indent)
+	jss, _ := JsonMarshalIndent(val, indent)
 	fmt.Printf("%s\n", jss)
 	return jss
 }
 
-// JsonMarshal SetEscapeHTML=false
-func JsonMarshal(val interface{}, indent string) (ret []byte, err error) {
-	if indent != "" {
-		ret, err = jsonIteratorConfig.MarshalIndent(val, "", indent)
-	} else {
-		ret, err = jsonIteratorConfig.Marshal(val)
-	}
+// JsonMarshalIndent SetEscapeHTML=false
+func JsonMarshalIndent(val interface{}, indent string) (ret []byte, err error) {
+	ret, err = jsonIteratorConfig.MarshalIndent(val, "", indent)
 	if err != nil {
 		return nil, errors.New(err.Error())
 	}
 	return
 }
 
-var jsonIteratorConfig = jsoniter.Config{
-	EscapeHTML: false,
-}.Froze()
+func JsonMarshal(val interface{}) (ret []byte, err error) {
+	ret, err = jsonIteratorConfig.Marshal(val)
+	if err != nil {
+		return nil, errors.New(err.Error())
+	}
+	return
+}
+
+var jsonIteratorConfig = jsoniter.ConfigFastest
